@@ -18,7 +18,7 @@
     "prett": "prettier ./src --write",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix --color",
-    "prepare": "husky init"
+    "prepare": "husky"
   },
   "browserslist": {
     "production": [
