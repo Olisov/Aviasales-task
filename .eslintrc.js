@@ -27,6 +27,7 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
     'react/react-in-jsx-scope': 'off',
+    'dot-notation': 'off',
     'no-unused-vars': ['warn'],
     camelcase: ['warn'],
     'import/no-unresolved': [2, { caseSensitive: false }],

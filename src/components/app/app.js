@@ -1,12 +1,26 @@
 import { React } from 'react'
-import './app.scss'
+import classNames from 'classnames'
+
+import aviasales from '../../assets/Logo.svg'
+import TransferFilter from '../transfer-filter'
+import CostFilter from '../cost-filter'
+import TicketField from '../ticket-field'
+
+import stl from './app.module.scss'
 
 function App() {
   return (
-    <>
-      <div className="hi">Hi Aviasales</div>
-      <noscript>You need to enable JavaScript to run this app.</noscript>
-    </>
+    <div className={classNames(stl['wrapper'], stl['wrapper--center'])}>
+      <img className={stl['logo']} src={aviasales} alt="Aviasales logo" />
+      <div className={stl['body']}>
+        <TransferFilter />
+        <div>
+          <CostFilter />
+          <TicketField />
+          <button type="button">ПОКАЗАТЬ ЕЩЁ 5 БИЛЕТОВ!</button>
+        </div>
+      </div>
+    </div>
   )
 }
 
