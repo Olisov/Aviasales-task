@@ -1,0 +1,22 @@
+.radio-group {
+  width: 100%;
+  //   min-height: 50px;
+//   padding-bottom: 16px;
+}
+
+:global {
+  .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-disabled) {
+    width: calc(100% / 3);
+    padding: 16px;
+    height: auto;
+    text-align: center;
+    font-weight: 600;
+    line-height: 167%;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    color: #fff;
+  }
+}
