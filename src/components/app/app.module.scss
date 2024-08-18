@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0 ;
+  padding: 20px 0;
 
   background-color: #f3f7fa;
 
@@ -22,7 +22,6 @@
   justify-content: center;
   padding: 10px 0;
   column-gap: 20px;
-
 
   @media (max-width: 960px) {
     flex-direction: column;
@@ -50,8 +49,4 @@
   letter-spacing: 0.065em;
   text-transform: uppercase;
   text-align: center;
-
-  & span {
-
-  }
 }
