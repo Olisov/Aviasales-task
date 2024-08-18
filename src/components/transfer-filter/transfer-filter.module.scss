@@ -7,13 +7,19 @@ $text_color: #4a4a4a;
 .body {
   width: 232px;
   padding: 10px 0;
-  font-family: 'Open Sans', sans-serif;
+  align-self: flex-start;
+  // font-family: 'Open Sans', sans-serif;
 
   // background-color: yellow;
   // border: 1px solid black;
   border-radius: 5px;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
   background: #fff;
+
+  @media (max-width: 960px) {
+    align-self: center;
+    margin-bottom: 15px;
+  }
 }
 
 .label {

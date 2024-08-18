@@ -43,7 +43,7 @@ function TransferFilter() {
         theme={{
           components: {
             Checkbox: {
-              fontFamily: 'Open Sans, sans-serif',
+              // fontFamily: 'Open Sans, sans-serif',
               fontSize: '13px',
               lineHeight: '20px',
               colorPrimary: 'white',

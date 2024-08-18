@@ -1,4 +1,5 @@
 import { React } from 'react'
+import { Button, ConfigProvider } from 'antd'
 import classNames from 'classnames'
 
 import aviasalesLogo from '../../assets/Logo.svg'
@@ -17,7 +18,21 @@ function App() {
         <div className={stl['main']}>
           <CostFilter />
           <TicketField />
-          <button type="button">ПОКАЗАТЬ ЕЩЁ 5 БИЛЕТОВ!</button>
+
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  defaultHoverBg: '#4096ff',
+                  defaultHoverColor: '#000',
+                },
+              },
+            }}
+          >
+            <Button block size="large" className={stl['more-btn']}>
+              ПОКАЗАТЬ ЕЩЁ 5 БИЛЕТОВ!
+            </Button>
+          </ConfigProvider>
         </div>
       </div>
     </div>
