@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { bindActionCreators } from 'redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Checkbox, ConfigProvider } from 'antd'
-// import classNames from 'classnames'
+
+import { transferFilterUpdate } from '../../store/actions'
 
 import stl from './transfer-filter.module.scss'
 
@@ -23,17 +26,19 @@ function TransferFilter() {
       value: '3',
     },
   ]
+  const dispatch = useDispatch()
+  const { filterUpdateDispatch } = bindActionCreators({ filterUpdateDispatch: transferFilterUpdate }, dispatch)
+  const numTransfersArr = useSelector((state) => state.numTransfersArr)
 
-  const defaultCheckedList = ['0', '2']
-
-  const [checkedList, setCheckedList] = useState(defaultCheckedList)
-  const checkAll = options.length === checkedList.length
+  const checkAll = options.length === numTransfersArr.length
 
   const onChange = (list) => {
-    setCheckedList(list)
+    // dispatch(transferFilterUpdate(list))
+    filterUpdateDispatch(list)
   }
   const onCheckAllChange = (e) => {
-    setCheckedList(e.target.checked ? options.map((opt) => opt.value) : [])
+    // dispatch(transferFilterUpdate(e.target.checked ? options.map((opt) => opt.value) : []))
+    filterUpdateDispatch(e.target.checked ? options.map((opt) => opt.value) : [])
   }
 
   return (
@@ -43,7 +48,6 @@ function TransferFilter() {
         theme={{
           components: {
             Checkbox: {
-              // fontFamily: 'Open Sans, sans-serif',
               fontSize: '13px',
               lineHeight: '20px',
               colorPrimary: 'white',
@@ -58,7 +62,7 @@ function TransferFilter() {
         <Checkbox className={stl['check-all-item']} onChange={onCheckAllChange} checked={checkAll}>
           Все
         </Checkbox>
-        <Checkbox.Group value={checkedList} onChange={onChange} options={options} />
+        <Checkbox.Group value={numTransfersArr} onChange={onChange} options={options} />
       </ConfigProvider>
     </aside>
   )

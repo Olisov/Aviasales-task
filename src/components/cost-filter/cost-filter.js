@@ -1,14 +1,25 @@
 import { React } from 'react'
+import { bindActionCreators } from 'redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Radio, ConfigProvider } from 'antd'
 // import classNames from 'classnames'
 
+import { costFilterUpdate } from '../../store/actions'
+
 import stl from './cost-filter.module.scss'
 
-const onChange = (e) => {
-  console.log(`radio checked:${e.target.value}`)
-}
-
 function CostFilter() {
+  const dispatch = useDispatch()
+  const { filterUpdateDispatch } = bindActionCreators({ filterUpdateDispatch: costFilterUpdate }, dispatch)
+  const costFilterStatus = useSelector((state) => state.costFilterStatus)
+
+  const onChange = (e) => {
+    // dispatch(costFilterUpdate(e.target.value))
+    filterUpdateDispatch(e.target.value)
+  }
+
+  // console.log('costFilterStatus', costFilterStatus)
+
   return (
     <ConfigProvider
       theme={{
@@ -25,7 +36,7 @@ function CostFilter() {
         },
       }}
     >
-      <Radio.Group className={stl['radio-group']} onChange={onChange} defaultValue="cheapest">
+      <Radio.Group className={stl['radio-group']} onChange={onChange} defaultValue={costFilterStatus}>
         <Radio.Button value="cheapest">Самый дешёвый</Radio.Button>
         <Radio.Button value="fastest">Самый быстрый</Radio.Button>
         <Radio.Button value="optimal">Оптимальный</Radio.Button>
