@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { Checkbox, ConfigProvider } from 'antd'
 
-import { transferFilterUpdate } from '../../store/actions'
+import { numTransferName, transferFilterUpdate } from '../../store/actions'
 
 import stl from './transfer-filter.module.scss'
 
@@ -11,26 +11,28 @@ function TransferFilter() {
   const options = [
     {
       label: 'Без пересадок',
-      value: '0',
+      value: numTransferName.NO_TRANSFERS,
     },
     {
       label: '1 пересадка',
-      value: '1',
+      value: numTransferName.ONE_TRANSFER,
     },
     {
       label: '2 пересадки',
-      value: '2',
+      value: numTransferName.TWO_TRANSFERS,
     },
     {
       label: '3 пересадки',
-      value: '3',
+      value: numTransferName.THREE_TRANSFERS,
     },
   ]
+
   const dispatch = useDispatch()
   const { filterUpdateDispatch } = bindActionCreators({ filterUpdateDispatch: transferFilterUpdate }, dispatch)
-  const numTransfersArr = useSelector((state) => state.numTransfersArr)
+  // const numTransfersFilter = useSelector((state) => state.numTransfersFilter)
+  const { numTransfersFilter } = useSelector((state) => state.filters)
 
-  const checkAll = options.length === numTransfersArr.length
+  const checkAll = options.length === numTransfersFilter.length
 
   const onChange = (list) => {
     // dispatch(transferFilterUpdate(list))
@@ -62,7 +64,7 @@ function TransferFilter() {
         <Checkbox className={stl['check-all-item']} onChange={onCheckAllChange} checked={checkAll}>
           Все
         </Checkbox>
-        <Checkbox.Group value={numTransfersArr} onChange={onChange} options={options} />
+        <Checkbox.Group value={numTransfersFilter} onChange={onChange} options={options} />
       </ConfigProvider>
     </aside>
   )
