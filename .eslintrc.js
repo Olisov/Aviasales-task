@@ -29,6 +29,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'dot-notation': 'off',
     'default-param-last': 'off',
+    'react/forbid-prop-types': 'off',
     'no-unused-vars': ['warn'],
     camelcase: ['warn'],
     'import/no-unresolved': [2, { caseSensitive: false }],

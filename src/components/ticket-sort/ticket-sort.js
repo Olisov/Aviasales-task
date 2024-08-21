@@ -11,8 +11,8 @@ import stl from './ticket-sort.module.scss'
 function TicketSort() {
   const dispatch = useDispatch()
   const { filterUpdateDispatch } = bindActionCreators({ filterUpdateDispatch: ticketSortUpdate }, dispatch)
-  // const costFilter = useSelector((state) => state.costFilter)
-  const { costFilter } = useSelector((state) => state.filters)
+  // const sortStatus = useSelector((state) => state.sortStatus)
+  const { sortStatus } = useSelector((state) => state.filters)
 
   const onChange = (e) => {
     // dispatch(ticketSortUpdate(e.target.value))
@@ -36,7 +36,7 @@ function TicketSort() {
         },
       }}
     >
-      <Radio.Group className={stl['radio-group']} onChange={onChange} defaultValue={costFilter}>
+      <Radio.Group className={stl['radio-group']} onChange={onChange} defaultValue={sortStatus}>
         <Radio.Button value={ticketSortStatus.CHEAPEST}>Самый дешёвый</Radio.Button>
         <Radio.Button value={ticketSortStatus.FASTEST}>Самый быстрый</Radio.Button>
         <Radio.Button value={ticketSortStatus.OPTIMAL}>Оптимальный</Radio.Button>
