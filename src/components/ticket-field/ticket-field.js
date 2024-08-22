@@ -1,37 +1,35 @@
 import { React } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
 
+import { ticketSortStatus } from '../../store/actions'
 import Ticket from '../ticket'
-// import classNames from 'classnames'
 
 import stl from './ticket-field.module.scss'
 
-function TicketField() {
-  const tickets = useSelector((storage) => storage.tickets)
-  const { sortStatus, numTransfersFilter } = useSelector((storage) => storage.filters)
-  const { numTicketsShown } = useSelector((storage) => storage.loadingStatuses)
-  const filterTickets = tickets
-  const sortedTickets = filterTickets.slice(0, numTicketsShown)
+function TicketField({ tickets }) {
+  const { sortStatus, numTicketsShown } = useSelector((storage) => storage.filters)
+
+  if (sortStatus === ticketSortStatus.CHEAPEST) {
+    tickets.sort((first, second) => first.price - second.price)
+  } else if (sortStatus === ticketSortStatus.FASTEST) {
+    tickets.sort((first, second) => first.totalDuration - second.totalDuration)
+  } else {
+    tickets.sort((first, second) => first.optimality - second.optimality)
+  }
 
   return (
     <div className={stl['body']}>
-      {/* <Ticket /> */}
-
-      {sortedTickets.map((ticket) => {
-        const { price, carrier, totalDuration, segments } = ticket
-        return (
-          <Ticket
-            key={`${carrier}_${price}_${totalDuration}`}
-            price={price}
-            carrier={carrier}
-            // optimality={optimality}
-            // totalDuration={totalDuration}
-            segments={segments}
-          />
-        )
+      {tickets.slice(0, numTicketsShown).map((ticket) => {
+        const { price, carrier, optimality, segments } = ticket
+        return <Ticket key={`${carrier}_${price}_${optimality}`} price={price} carrier={carrier} segments={segments} />
       })}
     </div>
   )
+}
+
+TicketField.propTypes = {
+  tickets: PropTypes.array.isRequired,
 }
 
 export default TicketField

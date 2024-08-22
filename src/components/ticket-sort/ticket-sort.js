@@ -2,7 +2,6 @@ import { React } from 'react'
 import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { Radio, ConfigProvider } from 'antd'
-// import classNames from 'classnames'
 
 import { ticketSortStatus, ticketSortUpdate } from '../../store/actions'
 
@@ -11,12 +10,9 @@ import stl from './ticket-sort.module.scss'
 function TicketSort() {
   const dispatch = useDispatch()
   const { filterUpdateDispatch } = bindActionCreators({ filterUpdateDispatch: ticketSortUpdate }, dispatch)
-  // const sortStatus = useSelector((state) => state.sortStatus)
   const { sortStatus } = useSelector((state) => state.filters)
 
   const onChange = (e) => {
-    // dispatch(ticketSortUpdate(e.target.value))
-
     filterUpdateDispatch(e.target.value)
   }
 

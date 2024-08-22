@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 
 import {
-  numTransferName,
   UPDATE_TRANSFERS_FILTER,
   ticketSortStatus,
   UPDATE_TICKET_SORT,
@@ -15,15 +14,12 @@ import {
 
 const initFilters = {
   sortStatus: ticketSortStatus.CHEAPEST,
-  numTransfersFilter: [numTransferName.NO_TRANSFERS, numTransferName.TWO_TRANSFERS],
-  // numTransfersFilter: [],
+  numTransfersFilter: [],
+  numTicketsShown: 5,
 }
 const initLoadingStatuses = {
   searchId: null,
   loading: true,
-  // warning: 'Рейсов, подходящих под заданные фильтры, не найдено',
-  warning: '',
-  numTicketsShown: 5,
   error: null,
   numMissedRequests: 0,
 }
@@ -31,9 +27,11 @@ const initLoadingStatuses = {
 const filters = (state = initFilters, action) => {
   switch (action.type) {
     case UPDATE_TICKET_SORT:
-      return { ...state, sortStatus: action.payload }
+      return { ...state, sortStatus: action.payload, numTicketsShown: 5 }
     case UPDATE_TRANSFERS_FILTER:
       return { ...state, numTransfersFilter: action.payload }
+    case INCREMENT_NUM_VISIBLE_TICKETS:
+      return { ...state, numTicketsShown: state.numTicketsShown + action.payload }
     default:
       return state
   }
@@ -47,8 +45,6 @@ const loadingStatuses = (state = initLoadingStatuses, action) => {
       return { ...state, ...action.payload }
     case LOADING_STOP:
       return { ...state, loading: action.payload }
-    case INCREMENT_NUM_VISIBLE_TICKETS:
-      return { ...state, numTicketsShown: state.numTicketsShown + action.payload }
     case INCREMENT_NUM_MISSED_REQUEST:
       return { ...state, numMissedRequests: state.numMissedRequests + 1 }
     default:

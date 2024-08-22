@@ -29,17 +29,14 @@ function TransferFilter() {
 
   const dispatch = useDispatch()
   const { filterUpdateDispatch } = bindActionCreators({ filterUpdateDispatch: transferFilterUpdate }, dispatch)
-  // const numTransfersFilter = useSelector((state) => state.numTransfersFilter)
   const { numTransfersFilter } = useSelector((state) => state.filters)
 
   const checkAll = options.length === numTransfersFilter.length
 
   const onChange = (list) => {
-    // dispatch(transferFilterUpdate(list))
     filterUpdateDispatch(list)
   }
   const onCheckAllChange = (e) => {
-    // dispatch(transferFilterUpdate(e.target.checked ? options.map((opt) => opt.value) : []))
     filterUpdateDispatch(e.target.checked ? options.map((opt) => opt.value) : [])
   }
 

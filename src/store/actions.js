@@ -4,10 +4,10 @@ export const ticketSortStatus = {
   OPTIMAL: 'optimal',
 }
 export const numTransferName = {
-  NO_TRANSFERS: '0',
-  ONE_TRANSFER: '1',
-  TWO_TRANSFERS: '2',
-  THREE_TRANSFERS: '3',
+  NO_TRANSFERS: 0,
+  ONE_TRANSFER: 1,
+  TWO_TRANSFERS: 2,
+  THREE_TRANSFERS: 3,
 }
 
 export const UPDATE_TRANSFERS_FILTER = 'UPDATE_TRANSFERS_FILTER'
@@ -47,7 +47,6 @@ export const asyncRequestTickets = (apiClient, searchId) => {
       .getTickets(searchId)
       .then((serverAnswer) => {
         const { stop, tickets } = serverAnswer
-        // console.log('serverAnswer', serverAnswer)
 
         if (stop) dispatch(stopTicketLoading())
         dispatch(saveTickets(tickets))

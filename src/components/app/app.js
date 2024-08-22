@@ -26,7 +26,8 @@ function App() {
       },
       dispatch
     )
-  const { searchId, loading, warning, numMissedRequests, error } = useSelector((storage) => storage.loadingStatuses)
+  const { searchId, loading, numMissedRequests, error } = useSelector((storage) => storage.loadingStatuses)
+  const { numTransfersFilter } = useSelector((storage) => storage.filters)
   const tickets = useSelector((storage) => storage.tickets)
 
   if (!searchId && !error) asyncRequestSessionIdDispatch(apiClientInstance)
@@ -36,7 +37,6 @@ function App() {
   const errorMessage = error ? (
     <Alert message={`Ошибка подключения - ${error.name}, ${error.message}`} type="error" showIcon />
   ) : null
-  const filterWarningMessage = warning ? <Alert message={warning} type="warning" showIcon /> : null
   const requestsWarningMessage = numMissedRequests ? (
     <Alert
       message={`Проблемы с доступностью сервера, кол-во нудачных запросов - ${numMissedRequests} `}
@@ -46,7 +46,45 @@ function App() {
     />
   ) : null
 
-  // console.log('App updated')
+  const filteredTickets =
+    numTransfersFilter.length === 0
+      ? []
+      : tickets.filter(({ segments: [segmentTo, segmentFrom] }) => {
+          const fitStopsTo = numTransfersFilter.findIndex((num) => num === segmentTo.stops.length) >= 0
+          const fitStopsFrom = numTransfersFilter.findIndex((num) => num === segmentFrom.stops.length) >= 0
+          if (fitStopsTo || fitStopsFrom) return true
+          return false
+        })
+
+  const idSuitableTickets = filteredTickets.length > 0
+  const content = idSuitableTickets ? (
+    <TicketField tickets={filteredTickets} />
+  ) : (
+    <Alert message="Рейсов, подходящих под заданные фильтры, не найдено" type="warning" showIcon />
+  )
+  const showMoreBtn = idSuitableTickets ? (
+    <ConfigProvider
+      theme={{
+        components: {
+          Button: {
+            defaultHoverBg: '#4096ff',
+            defaultHoverColor: '#000',
+          },
+        },
+      }}
+    >
+      <Button
+        block
+        size="large"
+        className={stl['more-btn']}
+        onClick={() => {
+          incNumVisibleTicketsDispatch(5)
+        }}
+      >
+        ПОКАЗАТЬ ЕЩЁ 5, ВСЕГО {filteredTickets.length} БИЛЕТОВ
+      </Button>
+    </ConfigProvider>
+  ) : null
 
   return (
     <div className={classNames(stl['wrapper'], stl['wrapper--center'])}>
@@ -55,32 +93,11 @@ function App() {
         <TransferFilter />
         <div className={stl['main']}>
           <TicketSort />
-          {requestsWarningMessage}
           {errorMessage}
+          {requestsWarningMessage}
           {loadingSpin}
-          {filterWarningMessage}
-          <TicketField />
-          <ConfigProvider
-            theme={{
-              components: {
-                Button: {
-                  defaultHoverBg: '#4096ff',
-                  defaultHoverColor: '#000',
-                },
-              },
-            }}
-          >
-            <Button
-              block
-              size="large"
-              className={stl['more-btn']}
-              onClick={() => {
-                incNumVisibleTicketsDispatch(5)
-              }}
-            >
-              ПОКАЗАТЬ ЕЩЁ 5, ВСЕГО {tickets.length} БИЛЕТОВ
-            </Button>
-          </ConfigProvider>
+          {content}
+          {showMoreBtn}
         </div>
       </div>
     </div>
