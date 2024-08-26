@@ -54,7 +54,9 @@ export default class ApiClient {
         (1 + numTransfersTo) * Math.round(durationTo / 60) +
         (1 + numTransfersFrom) * Math.round(durationFrom / 60)
       const totalDuration = durationTo + durationFrom
+
       return {
+        key: JSON.stringify(ticket),
         price,
         carrier,
         optimality,

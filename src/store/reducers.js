@@ -55,7 +55,13 @@ const loadingStatuses = (state = initLoadingStatuses, action) => {
 const tickets = (state = [], action) => {
   switch (action.type) {
     case SAVE_TICKETS:
-      return [...state, ...action.payload]
+      const newState = [...state]
+
+      action.payload.forEach((newTicket) => {
+        if (state.findIndex((savedTicket) => savedTicket.key === newTicket.key) < 0) newState.push(newTicket)
+      })
+
+      return newState
     default:
       return state
   }

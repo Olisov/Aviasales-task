@@ -1,4 +1,4 @@
-import React from 'react'
+import { React } from 'react'
 import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { Checkbox, ConfigProvider } from 'antd'

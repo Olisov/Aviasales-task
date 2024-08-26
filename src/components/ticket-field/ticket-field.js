@@ -2,21 +2,12 @@ import { React } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { ticketSortStatus } from '../../store/actions'
 import Ticket from '../ticket'
 
 import stl from './ticket-field.module.scss'
 
 function TicketField({ tickets }) {
-  const { sortStatus, numTicketsShown } = useSelector((storage) => storage.filters)
-
-  if (sortStatus === ticketSortStatus.CHEAPEST) {
-    tickets.sort((first, second) => first.price - second.price)
-  } else if (sortStatus === ticketSortStatus.FASTEST) {
-    tickets.sort((first, second) => first.totalDuration - second.totalDuration)
-  } else {
-    tickets.sort((first, second) => first.optimality - second.optimality)
-  }
+  const { numTicketsShown } = useSelector((storage) => storage.filters)
 
   return (
     <div className={stl['body']}>
