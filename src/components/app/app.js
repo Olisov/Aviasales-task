@@ -46,24 +46,27 @@ function App() {
     />
   ) : null
 
-  const filteredTickets =
-    numTransfersFilter.length === 0
-      ? []
-      : tickets.filter(({ segments: [segmentTo, segmentFrom] }) => {
-          const fitStopsTo = numTransfersFilter.findIndex((num) => num === segmentTo.stops.length) >= 0
-          const fitStopsFrom = numTransfersFilter.findIndex((num) => num === segmentFrom.stops.length) >= 0
-          if (fitStopsTo || fitStopsFrom) return true
-          return false
-        })
+  const filteredTicketsMemo = useMemo(() => {
+    const filteredTickets =
+      numTransfersFilter.length === 0
+        ? []
+        : tickets.filter(({ segments: [segmentTo, segmentFrom] }) => {
+            const fitStopsTo = numTransfersFilter.findIndex((num) => num === segmentTo.stops.length) >= 0
+            const fitStopsFrom = numTransfersFilter.findIndex((num) => num === segmentFrom.stops.length) >= 0
+            if (fitStopsTo || fitStopsFrom) return true
+            return false
+          })
 
-  if (sortStatus === ticketSortStatus.CHEAPEST) {
-    filteredTickets.sort((first, second) => first.price - second.price)
-  } else if (sortStatus === ticketSortStatus.FASTEST) {
-    filteredTickets.sort((first, second) => first.totalDuration - second.totalDuration)
-  } else {
-    filteredTickets.sort((first, second) => first.optimality - second.optimality)
-  }
-  const filteredTicketsMemo = useMemo(() => filteredTickets, [tickets, numTransfersFilter, sortStatus])
+    if (sortStatus === ticketSortStatus.CHEAPEST) {
+      filteredTickets.sort((first, second) => first.price - second.price)
+    } else if (sortStatus === ticketSortStatus.FASTEST) {
+      filteredTickets.sort((first, second) => first.totalDuration - second.totalDuration)
+    } else {
+      filteredTickets.sort((first, second) => first.optimality - second.optimality)
+    }
+    return filteredTickets
+  }, [tickets, numTransfersFilter, sortStatus])
+
   const idSuitableTickets = filteredTicketsMemo.length > 0
   const content = idSuitableTickets ? (
     <TicketField tickets={filteredTicketsMemo} />
@@ -89,7 +92,7 @@ function App() {
           incNumVisibleTicketsDispatch(5)
         }}
       >
-        ПОКАЗАТЬ ЕЩЁ 5, ВСЕГО {filteredTickets.length} БИЛЕТОВ
+        ПОКАЗАТЬ ЕЩЁ 5, ВСЕГО {filteredTicketsMemo.length} БИЛЕТОВ
       </Button>
     </ConfigProvider>
   ) : null
