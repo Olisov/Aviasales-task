@@ -29,7 +29,6 @@ function App() {
   const { searchId, loading, numMissedRequests, error } = useSelector((storage) => storage.loadingStatuses)
   const { numTransfersFilter, sortStatus } = useSelector((storage) => storage.filters)
   const tickets = useSelector((storage) => storage.tickets)
-  const ticketsMemo = useMemo(() => tickets, [tickets, numTransfersFilter, sortStatus])
 
   if (!searchId && !error) asyncRequestSessionIdDispatch(apiClientInstance)
   else if (loading) asyncRequestTicketsDispatch(apiClientInstance, searchId)
@@ -50,7 +49,7 @@ function App() {
   const filteredTickets =
     numTransfersFilter.length === 0
       ? []
-      : ticketsMemo.filter(({ segments: [segmentTo, segmentFrom] }) => {
+      : tickets.filter(({ segments: [segmentTo, segmentFrom] }) => {
           const fitStopsTo = numTransfersFilter.findIndex((num) => num === segmentTo.stops.length) >= 0
           const fitStopsFrom = numTransfersFilter.findIndex((num) => num === segmentFrom.stops.length) >= 0
           if (fitStopsTo || fitStopsFrom) return true
@@ -64,10 +63,10 @@ function App() {
   } else {
     filteredTickets.sort((first, second) => first.optimality - second.optimality)
   }
-
-  const idSuitableTickets = filteredTickets.length > 0
+  const filteredTicketsMemo = useMemo(() => filteredTickets, [tickets, numTransfersFilter, sortStatus])
+  const idSuitableTickets = filteredTicketsMemo.length > 0
   const content = idSuitableTickets ? (
-    <TicketField tickets={filteredTickets} />
+    <TicketField tickets={filteredTicketsMemo} />
   ) : (
     <Alert message="Рейсов, подходящих под заданные фильтры, не найдено" type="warning" showIcon />
   )
