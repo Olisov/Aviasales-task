@@ -1,4 +1,4 @@
-import { React, useMemo } from 'react'
+import { React, useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Button, Spin, Alert, ConfigProvider } from 'antd'
@@ -8,7 +8,12 @@ import aviasalesLogo from '../../assets/Logo.svg'
 import TransferFilter from '../transfer-filter'
 import TicketSort from '../ticket-sort'
 import TicketField from '../ticket-field'
-import { asyncRequestSessionId, asyncRequestTickets, incNumVisibleTickets, ticketSortStatus } from '../../store/actions'
+import {
+  incNumVisibleTickets,
+  asyncRequestSessionId,
+  asyncRequestTickets,
+  ticketSortStatus,
+} from '../../store/reducers'
 import ApiClient from '../../api-client'
 
 import stl from './app.module.scss'
@@ -30,8 +35,10 @@ function App() {
   const { numTransfersFilter, sortStatus } = useSelector((storage) => storage.filters)
   const tickets = useSelector((storage) => storage.tickets)
 
-  if (!searchId && !error) asyncRequestSessionIdDispatch(apiClientInstance)
-  else if (loading) asyncRequestTicketsDispatch(apiClientInstance, searchId)
+  useEffect(() => {
+    if (!searchId && !error) asyncRequestSessionIdDispatch(apiClientInstance)
+    else if (loading) asyncRequestTicketsDispatch({ apiClientInstance, searchId })
+  }, [searchId, error, loading, tickets, numMissedRequests])
 
   const loadingSpin = loading ? <Spin size="large" /> : null
   const errorMessage = error ? (

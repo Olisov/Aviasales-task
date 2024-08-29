@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { Checkbox, ConfigProvider } from 'antd'
 
-import { numTransferName, transferFilterUpdate } from '../../store/actions'
+import { transferFilterUpdate, numTransferName } from '../../store/reducers'
 
 import stl from './transfer-filter.module.scss'
 

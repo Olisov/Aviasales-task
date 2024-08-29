@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { Radio, ConfigProvider } from 'antd'
 
-import { ticketSortStatus, ticketSortUpdate } from '../../store/actions'
+import { ticketSortUpdate, ticketSortStatus } from '../../store/reducers'
 
 import stl from './ticket-sort.module.scss'
 

@@ -29,6 +29,7 @@ module.exports = {
     semi: ['error', 'never'],
     'react/react-in-jsx-scope': 'off',
     'dot-notation': 'off',
+    'no-use-before-define': 'off',
     'no-case-declarations': 'off',
     'default-param-last': 'off',
     'react/forbid-prop-types': 'off',

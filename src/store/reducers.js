@@ -1,76 +1,94 @@
-import { combineReducers } from 'redux'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import {
-  UPDATE_TRANSFERS_FILTER,
-  ticketSortStatus,
-  UPDATE_TICKET_SORT,
-  SAVE_SEARCH_ID,
-  SAVE_TICKETS,
-  LOADING_STOP,
-  REQUEST_ERROR,
-  INCREMENT_NUM_MISSED_REQUEST,
-  INCREMENT_NUM_VISIBLE_TICKETS,
-} from './actions'
-
-const initFilters = {
-  sortStatus: ticketSortStatus.CHEAPEST,
-  numTransfersFilter: [],
-  numTicketsShown: 5,
+export const ticketSortStatus = {
+  CHEAPEST: 'cheapest',
+  FASTEST: 'fastest',
+  OPTIMAL: 'optimal',
 }
-const initLoadingStatuses = {
-  searchId: null,
-  loading: true,
-  error: null,
-  numMissedRequests: 0,
+export const numTransferName = {
+  NO_TRANSFERS: 0,
+  ONE_TRANSFER: 1,
+  TWO_TRANSFERS: 2,
+  THREE_TRANSFERS: 3,
 }
 
-const filters = (state = initFilters, action) => {
-  switch (action.type) {
-    case UPDATE_TICKET_SORT:
-      return { ...state, sortStatus: action.payload, numTicketsShown: 5 }
-    case UPDATE_TRANSFERS_FILTER:
-      return { ...state, numTransfersFilter: action.payload }
-    case INCREMENT_NUM_VISIBLE_TICKETS:
-      return { ...state, numTicketsShown: state.numTicketsShown + action.payload }
-    default:
-      return state
-  }
-}
-
-const loadingStatuses = (state = initLoadingStatuses, action) => {
-  switch (action.type) {
-    case SAVE_SEARCH_ID:
-      return { ...state, searchId: action.payload }
-    case REQUEST_ERROR:
-      return { ...state, ...action.payload }
-    case LOADING_STOP:
-      return { ...state, loading: action.payload }
-    case INCREMENT_NUM_MISSED_REQUEST:
-      return { ...state, numMissedRequests: state.numMissedRequests + 1 }
-    default:
-      return state
-  }
-}
-
-const tickets = (state = [], action) => {
-  switch (action.type) {
-    case SAVE_TICKETS:
-      const newState = [...state]
-
-      action.payload.forEach((newTicket) => {
-        if (state.findIndex((savedTicket) => savedTicket.key === newTicket.key) < 0) newState.push(newTicket)
-      })
-
-      return newState
-    default:
-      return state
-  }
-}
-
-const rootReducer = combineReducers({
-  filters,
-  loadingStatuses,
-  tickets,
+const filtersSlice = createSlice({
+  name: 'filters',
+  initialState: {
+    sortStatus: ticketSortStatus.CHEAPEST,
+    numTransfersFilter: [],
+    numTicketsShown: 5,
+  },
+  reducers: {
+    ticketSortUpdate: (state, action) => ({ ...state, sortStatus: action.payload, numTicketsShown: 5 }),
+    transferFilterUpdate: (state, action) => ({ ...state, numTransfersFilter: action.payload }),
+    incNumVisibleTickets: (state, action) => ({
+      ...state,
+      numTicketsShown: state.numTicketsShown + action.payload,
+    }),
+  },
 })
 
-export default rootReducer
+export const asyncRequestSessionId = createAsyncThunk('loadingStatuses/requestSessionId', (apiClient, { dispatch }) => {
+  apiClient
+    .getSearchId()
+    .then((searchId) => {
+      dispatch(saveSessionId(searchId))
+    })
+    .catch((getSearchIdError) => {
+      dispatch(requestError(getSearchIdError))
+    })
+})
+
+const loadingStatusesSlice = createSlice({
+  name: 'loadingStatuses',
+  initialState: {
+    searchId: null,
+    loading: true,
+    error: null,
+    numMissedRequests: 0,
+  },
+  reducers: {
+    saveSessionId: (state, action) => ({ ...state, searchId: action.payload }),
+    requestError: (state, action) => ({ ...state, error: action.payload, loading: false }),
+    stopTicketLoading: (state) => ({ ...state, loading: false }),
+    incNumMissedRequest: (state) => ({ ...state, numMissedRequests: state.numMissedRequests + 1 }),
+  },
+})
+
+const ticketsSlice = createSlice({
+  name: 'tickets',
+  initialState: [],
+  reducers: {
+    saveTickets: (state, action) => {
+      action.payload.forEach((newTicket) => {
+        if (state.findIndex((savedTicket) => savedTicket.key === newTicket.key) < 0) state.push(newTicket)
+      })
+    },
+  },
+})
+
+export const asyncRequestTickets = createAsyncThunk(
+  'tickets/requestTickets',
+  ({ apiClientInstance, searchId }, { dispatch }) => {
+    apiClientInstance
+      .getTickets(searchId)
+      .then((serverAnswer) => {
+        const { stop, tickets } = serverAnswer
+
+        if (stop) dispatch(stopTicketLoading())
+        dispatch(saveTickets(tickets))
+      })
+      .catch((getTicketsError) => {
+        if (getTicketsError.message !== 'Server failure, received 500') dispatch(requestError(getTicketsError))
+        else dispatch(incNumMissedRequest())
+      })
+  }
+)
+
+export const { ticketSortUpdate, transferFilterUpdate, incNumVisibleTickets } = filtersSlice.actions
+export const { saveSessionId, requestError, stopTicketLoading, incNumMissedRequest } = loadingStatusesSlice.actions
+export const { saveTickets } = ticketsSlice.actions
+export const filtersReducer = filtersSlice.reducer
+export const loadingStatusesReducer = loadingStatusesSlice.reducer
+export const ticketsReducer = ticketsSlice.reducer
